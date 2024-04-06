@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simple Color Picker</title>
+  <style>
+    .color-picker {
+      display: flex;
+      align-items: center;
+      margin: 10px;
+    }
+    .color-display {
+      width: 50px;
+      height: 50px;
+      border: 1px solid black;
+      margin-right: 10px;
+    }
+    #color-picker-canvas {
+      cursor: pointer;
+      border: 1px solid black;
+    }
+  </style>
+</head>
+<body>
+  <div class="color-picker">
+    <div class="color-display" id="selected-color"></div>
+    <canvas id="color-picker-canvas" width="200" height="200"></canvas>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('color-picker-canvas');
+    const ctx = canvas.getContext('2d');
+
+    // Generate a color gradient on the canvas
+    const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
+    gradient.addColorStop(0, 'red');
+    gradient.addColorStop(1/6, 'orange');
+    gradient.addColorStop(2/6, 'yellow');
+    gradient.addColorStop(3/6, 'green');
+    gradient.addColorStop(4/6, 'blue');
+    gradient.addColorStop(5/6, 'indigo');
+    gradient.addColorStop(1, 'violet');
+
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    const selectedColorDisplay = document.getElementById('selected-color');
+
+    let selectedColor = null;
+
+    canvas.addEventListener('click', (event) => {
+      const x = event.offsetX;
+      const y = event.offsetY;
+      const imageData = ctx.getImageData(x, y, 1, 1).data;
+
+      // Get the RGB values from the image data
+      const red = imageData[0];
+      const green = imageData[1];
+      const blue = imageData[2];
+
+      // Convert RGB to hex code
+      const hex = `#${red.toString(16).padStart(2, '0')}${green.toString(16).padStart(2, '0')}${blue.toString(16).padStart(2, '0')}`;
+
+      selectedColor = hex;
+      selectedColorDisplay.style.backgroundColor = selectedColor;
+
+      // You can display the hex code in a text field here
+      console.log("Selected color:", selectedColor);
+    });
+  </script>
+</body>
+</html>
